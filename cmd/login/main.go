@@ -5,9 +5,11 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
+	"os"
 
 	"golang.org/x/oauth2"
 )
@@ -64,7 +66,9 @@ func Main(ctx context.Context) error {
 		return fmt.Errorf("exchange: %w", err)
 	}
 
-	fmt.Printf("\n%v\n", t)
+	e := json.NewEncoder(os.Stdout)
+	e.SetIndent("", "\t")
+	e.Encode(t)
 
 	return nil
 }
