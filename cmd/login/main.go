@@ -20,7 +20,8 @@ func state() string {
 	return base64.RawURLEncoding.EncodeToString(b[:])
 }
 
-func pxce() (challenge, sum string, err error) {
+// https://www.oauth.com/oauth2-servers/pkce/
+func pkce() (challenge, sum string, err error) {
 	var p [86]byte
 	if _, err := io.ReadFull(rand.Reader, p[:]); err != nil {
 		return "", "", fmt.Errorf("rand read full: %w", err)
@@ -32,9 +33,9 @@ func pxce() (challenge, sum string, err error) {
 }
 
 func Main(ctx context.Context) error {
-	challenge, sum, err := pxce()
+	challenge, sum, err := pkce()
 	if err != nil {
-		return fmt.Errorf("pxce: %w", err)
+		return fmt.Errorf("pkce: %w", err)
 	}
 
 	c := &oauth2.Config{
