@@ -1,4 +1,4 @@
-module github.com/uhthomas/thomas
+module github.com/uhthomas/tesla
 
 go 1.15
 

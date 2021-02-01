@@ -24,7 +24,7 @@ func state() string {
 
 // https://www.oauth.com/oauth2-servers/pkce/
 func pkce() (verifier, challenge string, err error) {
-	var p [86]byte
+	var p [87]byte
 	if _, err := io.ReadFull(rand.Reader, p[:]); err != nil {
 		return "", "", fmt.Errorf("rand read full: %w", err)
 	}

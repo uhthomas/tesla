@@ -126,6 +126,12 @@ func (t *Transaction) Do(ctx context.Context, authURL string) (code string, err 
 	}
 	defer res.Body.Close()
 
+	switch res.StatusCode {
+	case http.StatusOK:
+	case http.StatusFound:
+		return codeFromResponse(res)
+	}
+
 	if res.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("unexpected status code %d", res.StatusCode)
 	}
@@ -167,12 +173,7 @@ func (t *Transaction) Do(ctx context.Context, authURL string) (code string, err 
 	if res.StatusCode != http.StatusFound {
 		return "", fmt.Errorf("unexpected status code %d", res.StatusCode)
 	}
-
-	u, err := res.Location()
-	if err != nil {
-		return "", fmt.Errorf("response location: %w", err)
-	}
-	return u.Query().Get("code"), nil
+	return codeFromResponse(res)
 }
 
 type Device struct {
@@ -283,4 +284,12 @@ func (t *Transaction) verify(ctx context.Context, devices []Device) error {
 		return errors.New("not approved")
 	}
 	return nil
+}
+
+func codeFromResponse(res *http.Response) (code string, err error) {
+	u, err := res.Location()
+	if err != nil {
+		return "", fmt.Errorf("response location: %w", err)
+	}
+	return u.Query().Get("code"), nil
 }
