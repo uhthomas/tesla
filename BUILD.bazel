@@ -7,7 +7,7 @@ load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
 
 buildifier(name = "buildifier")
 
-load("@io_bazel_rules_go//go:def.bzl", "go_library", "nogo")
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test", "nogo")
 
 nogo(
     name = "nogo",
@@ -45,4 +45,13 @@ go_library(
     ],
     importpath = "github.com/uhthomas/tesla",
     visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "tesla_test",
+    srcs = [
+        "client_test.go",
+        "option_test.go",
+    ],
+    embed = [":tesla"],
 )
