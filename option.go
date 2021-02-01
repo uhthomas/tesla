@@ -1,3 +1,3 @@
 package tesla
 
-type Option func(*Client) error
+type Option func(*Service) error

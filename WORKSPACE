@@ -433,8 +433,8 @@ go_repository(
 go_repository(
     name = "org_golang_x_crypto",
     importpath = "golang.org/x/crypto",
-    sum = "h1:DN0cp81fZ3njFcrLCytUHRSUkqBjfTo4Tx9RJTWs0EY=",
-    version = "v0.0.0-20201221181555-eec23a3978ad",
+    sum = "h1:psW17arqaxU48Z5kZ0CQnkZWQJsqcURM6tKiBApRjXI=",
+    version = "v0.0.0-20200622213623-75b288015ac9",
 )
 
 go_repository(
@@ -501,13 +501,6 @@ go_repository(
 )
 
 go_repository(
-    name = "org_golang_x_term",
-    importpath = "golang.org/x/term",
-    sum = "h1:/ZHdbVpdR/jk3g30/d4yUL0JU9kksj8+F/bnQUVLGDM=",
-    version = "v0.0.0-20201117132131-f5c789dd3221",
-)
-
-go_repository(
     name = "org_golang_x_text",
     importpath = "golang.org/x/text",
     sum = "h1:cokOdA+Jmi5PJGXLlLllQSgYigAEfHXJAERHVMaCc2k=",
@@ -536,3 +529,52 @@ go_repository(
 )
 
 gazelle_dependencies()
+
+go_repository(
+    name = "com_github_andybalholm_cascadia",
+    importpath = "github.com/andybalholm/cascadia",
+    sum = "h1:BuuO6sSfQNFRu1LppgbD25Hr2vLYW25JvxHs5zzsLTo=",
+    version = "v1.1.0",
+)
+
+go_repository(
+    name = "com_github_juju_ansiterm",
+    importpath = "github.com/juju/ansiterm",
+    sum = "h1:FaWFmfWdAUKbSCtOU2QjDaorUexogfaMgbipgYATUMU=",
+    version = "v0.0.0-20180109212912-720a0952cc2a",
+)
+
+go_repository(
+    name = "com_github_lunixbochs_vtclean",
+    importpath = "github.com/lunixbochs/vtclean",
+    sum = "h1:weJVJJRzAJBFRlAiJQROKQs8oC9vOxvm4rZmBBk0ONw=",
+    version = "v0.0.0-20180621232353-2d01aacdc34a",
+)
+
+go_repository(
+    name = "com_github_manifoldco_promptui",
+    importpath = "github.com/manifoldco/promptui",
+    sum = "h1:R95mMF+McvXZQ7j1g8ucVZE1gLP3Sv6j9vlF9kyRqQo=",
+    version = "v0.8.0",
+)
+
+go_repository(
+    name = "com_github_mattn_go_colorable",
+    importpath = "github.com/mattn/go-colorable",
+    sum = "h1:UVL0vNpWh04HeJXV0KLcaT7r06gOH2l4OW6ddYRUIY4=",
+    version = "v0.0.9",
+)
+
+go_repository(
+    name = "com_github_mattn_go_isatty",
+    importpath = "github.com/mattn/go-isatty",
+    sum = "h1:bnP0vzxcAdeI1zdubAl5PjU6zsERjGZb7raWodagDYs=",
+    version = "v0.0.4",
+)
+
+go_repository(
+    name = "com_github_puerkitobio_goquery",
+    importpath = "github.com/PuerkitoBio/goquery",
+    sum = "h1:FgjbQZKl5HTmcn4sKBgvx8vv63nhyhIpv7lJpFGCWpk=",
+    version = "v1.6.1",
+)

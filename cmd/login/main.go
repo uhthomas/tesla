@@ -21,19 +21,19 @@ func state() string {
 }
 
 // https://www.oauth.com/oauth2-servers/pkce/
-func pkce() (challenge, sum string, err error) {
+func pkce() (verifier, challenge string, err error) {
 	var p [86]byte
 	if _, err := io.ReadFull(rand.Reader, p[:]); err != nil {
 		return "", "", fmt.Errorf("rand read full: %w", err)
 	}
-	challenge = base64.RawURLEncoding.EncodeToString(p[:])
+	verifier = base64.RawURLEncoding.EncodeToString(p[:])
 	b := sha256.Sum256([]byte(challenge))
-	sum = base64.RawURLEncoding.EncodeToString(b[:])
-	return challenge, sum, nil
+	challenge = base64.RawURLEncoding.EncodeToString(b[:])
+	return verifier, challenge, nil
 }
 
 func Main(ctx context.Context) error {
-	challenge, sum, err := pkce()
+	verifier, challenge, err := pkce()
 	if err != nil {
 		return fmt.Errorf("pkce: %w", err)
 	}
@@ -49,26 +49,19 @@ func Main(ctx context.Context) error {
 		},
 	}
 
-	// go http.ListenAndServe(":9001", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	// 	code := r.FormValue("code")
-	// 	fmt.Fprintf(w, "Received code: %v\r\nYou can now safely close this browser window.", code)
-	// }))
-
-	fmt.Printf("Go to:\n\t%s\nEnter your code: ", c.AuthCodeURL(state(), oauth2.AccessTypeOffline,
-		oauth2.SetAuthURLParam("code_challenge", sum),
+	code, err := NewTransaction(nil).Do(ctx, c.AuthCodeURL(state(), oauth2.AccessTypeOffline,
+		oauth2.SetAuthURLParam("code_challenge", challenge),
 		oauth2.SetAuthURLParam("code_challenge_method", "S256"),
 	))
-
-	var code string
-	if _, err := fmt.Scan(&code); err != nil {
+	if err != nil {
 		return err
 	}
 
 	t, err := c.Exchange(ctx, code,
-		oauth2.SetAuthURLParam("code_verifier", challenge),
+		oauth2.SetAuthURLParam("code_verifier", verifier),
 	)
 	if err != nil {
-		return err
+		return fmt.Errorf("exchange: %w", err)
 	}
 
 	fmt.Printf("\n%v\n", t)

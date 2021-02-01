@@ -40,8 +40,8 @@ nogo(
 go_library(
     name = "tesla",
     srcs = [
-        "client.go",
         "option.go",
+        "service.go",
     ],
     importpath = "github.com/uhthomas/tesla",
     visibility = ["//visibility:public"],
@@ -50,8 +50,8 @@ go_library(
 go_test(
     name = "tesla_test",
     srcs = [
-        "client_test.go",
         "option_test.go",
+        "service_test.go",
     ],
     embed = [":tesla"],
 )
