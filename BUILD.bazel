@@ -40,11 +40,13 @@ nogo(
 go_library(
     name = "tesla",
     srcs = [
+        "auth.go",
         "option.go",
         "service.go",
     ],
     importpath = "github.com/uhthomas/tesla",
     visibility = ["//visibility:public"],
+    deps = ["@com_github_puerkitobio_goquery//:goquery"],
 )
 
 go_test(

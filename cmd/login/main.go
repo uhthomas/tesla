@@ -6,11 +6,14 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
 	"os"
 
+	"github.com/manifoldco/promptui"
+	"github.com/uhthomas/tesla"
 	"golang.org/x/oauth2"
 )
 
@@ -34,7 +37,67 @@ func pkce() (verifier, challenge string, err error) {
 	return verifier, challenge, nil
 }
 
+func selectDevice(ctx context.Context, devices []tesla.Device) (d tesla.Device, passcode string, err error) {
+	var i int
+	if len(devices) > 1 {
+		var err error
+		i, _, err = (&promptui.Select{
+			Label:   "Device",
+			Items:   devices,
+			Pointer: promptui.PipeCursor,
+		}).Run()
+		if err != nil {
+			return tesla.Device{}, "", fmt.Errorf("select device: %w", err)
+		}
+	}
+	d = devices[i]
+
+	passcode, err = (&promptui.Prompt{
+		Label:   "Passcode",
+		Pointer: promptui.PipeCursor,
+		Validate: func(s string) error {
+			if len(s) != 6 {
+				return errors.New("len(s) != 6")
+			}
+			return nil
+		},
+	}).Run()
+	if err != nil {
+		return tesla.Device{}, "", err
+	}
+	return d, passcode, nil
+}
+
 func Main(ctx context.Context) error {
+	username, err := (&promptui.Prompt{
+		Label:   "Username",
+		Pointer: promptui.PipeCursor,
+		Validate: func(s string) error {
+			if len(s) == 0 {
+				return errors.New("len(s) == 0")
+			}
+			return nil
+		},
+	}).Run()
+	if err != nil {
+		return err
+	}
+
+	password, err := (&promptui.Prompt{
+		Label:   "Password",
+		Mask:    ' ',
+		Pointer: promptui.PipeCursor,
+		Validate: func(s string) error {
+			if len(s) == 0 {
+				return errors.New("len(s) == 0")
+			}
+			return nil
+		},
+	}).Run()
+	if err != nil {
+		return err
+	}
+
 	verifier, challenge, err := pkce()
 	if err != nil {
 		return fmt.Errorf("pkce: %w", err)
@@ -51,10 +114,13 @@ func Main(ctx context.Context) error {
 		},
 	}
 
-	code, err := NewTransaction(nil).Do(ctx, c.AuthCodeURL(state(), oauth2.AccessTypeOffline,
-		oauth2.SetAuthURLParam("code_challenge", challenge),
-		oauth2.SetAuthURLParam("code_challenge_method", "S256"),
-	))
+	code, err := (&tesla.Auth{
+		AuthURL: c.AuthCodeURL(state(), oauth2.AccessTypeOffline,
+			oauth2.SetAuthURLParam("code_challenge", challenge),
+			oauth2.SetAuthURLParam("code_challenge_method", "S256"),
+		),
+		SelectDevice: selectDevice,
+	}).Do(ctx, username, password)
 	if err != nil {
 		return err
 	}
