@@ -66,9 +66,7 @@ func (a *Auth) Do(ctx context.Context, username, password string) (code string, 
 	case http.StatusOK:
 	case http.StatusFound:
 		return codeFromResponse(res)
-	}
-
-	if res.StatusCode != http.StatusOK {
+	default:
 		return "", fmt.Errorf("unexpected status code %d", res.StatusCode)
 	}
 
