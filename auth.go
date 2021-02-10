@@ -56,6 +56,12 @@ func (a *Auth) Do(ctx context.Context, username, password string) (code string, 
 		}
 	}
 
+	cr := a.Client.CheckRedirect
+	a.Client.CheckRedirect = func(*http.Request, []*http.Request) error {
+		return http.ErrUseLastResponse
+	}
+	defer func() { a.Client.CheckRedirect = cr }()
+
 	res, v, err := a.login(ctx, username, password)
 	if err != nil {
 		return "", fmt.Errorf("login: %w", err)
@@ -212,12 +218,6 @@ func (a *Auth) verify(ctx context.Context, transactionID string, d Device, passc
 }
 
 func (a *Auth) commit(ctx context.Context, transactionID string) (code string, err error) {
-	cr := a.Client.CheckRedirect
-	a.Client.CheckRedirect = func(*http.Request, []*http.Request) error {
-		return http.ErrUseLastResponse
-	}
-	defer func() { a.Client.CheckRedirect = cr }()
-
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, a.AuthURL, strings.NewReader(url.Values{
 		"transaction_id": {transactionID},
 	}.Encode()))

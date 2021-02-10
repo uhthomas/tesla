@@ -134,6 +134,7 @@ func Main(ctx context.Context) error {
 
 	e := json.NewEncoder(os.Stdout)
 	e.SetIndent("", "\t")
+	e.Encode(c)
 	e.Encode(t)
 
 	return nil
