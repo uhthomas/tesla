@@ -41,12 +41,18 @@ go_library(
     name = "tesla",
     srcs = [
         "auth.go",
+        "oauth2.go",
         "option.go",
         "service.go",
+        "vehicle.go",
+        "vehicles.go",
     ],
     importpath = "github.com/uhthomas/tesla",
     visibility = ["//visibility:public"],
-    deps = ["@com_github_puerkitobio_goquery//:goquery"],
+    deps = [
+        "@com_github_puerkitobio_goquery//:goquery",
+        "@org_golang_x_oauth2//:oauth2",
+    ],
 )
 
 go_test(
