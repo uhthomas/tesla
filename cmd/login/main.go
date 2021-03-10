@@ -10,7 +10,10 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"net"
+	"net/http"
 	"os"
+	"time"
 
 	"github.com/manifoldco/promptui"
 	"github.com/uhthomas/tesla"
@@ -114,16 +117,37 @@ func Main(ctx context.Context) error {
 		},
 	}
 
+	hc := &http.Client{
+		Transport: &tesla.Transport{RoundTripper: &http.Transport{
+			Proxy: http.ProxyFromEnvironment,
+			DialContext: (&net.Dialer{
+				Timeout:   30 * time.Second,
+				KeepAlive: 30 * time.Second,
+			}).DialContext,
+			ForceAttemptHTTP2:     true,
+			MaxIdleConns:          100,
+			IdleConnTimeout:       90 * time.Second,
+			ResponseHeaderTimeout: 10 * time.Second,
+			TLSHandshakeTimeout:   10 * time.Second,
+			ExpectContinueTimeout: 1 * time.Second,
+		}},
+	}
+
 	code, err := (&tesla.Auth{
 		AuthURL: c.AuthCodeURL(state(), oauth2.AccessTypeOffline,
 			oauth2.SetAuthURLParam("code_challenge", challenge),
 			oauth2.SetAuthURLParam("code_challenge_method", "S256"),
 		),
 		SelectDevice: selectDevice,
+		Client:       hc,
 	}).Do(ctx, username, password)
 	if err != nil {
 		return err
 	}
+
+	fmt.Println(code)
+
+	ctx = context.WithValue(ctx, oauth2.HTTPClient, hc)
 
 	t, err := c.Exchange(ctx, code,
 		oauth2.SetAuthURLParam("code_verifier", verifier),

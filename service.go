@@ -7,8 +7,8 @@ import (
 )
 
 type Service struct {
-	c         *http.Client
-	baseURL   *url.URL
+	c       *http.Client
+	baseURL *url.URL
 }
 
 // New creates a new Tesla service client.
@@ -25,5 +25,6 @@ func New(ctx context.Context, opts ...Option) (*Service, error) {
 			return nil, err
 		}
 	}
+	s.c.Transport = &Transport{RoundTripper: s.c.Transport}
 	return s, nil
 }

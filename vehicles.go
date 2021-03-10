@@ -42,7 +42,6 @@ func (s *Service) Vehicles(ctx context.Context) (Vehicles, error) {
 	if err != nil {
 		return nil, fmt.Errorf("new request: %w", err)
 	}
-	req.Header.Set("User-Agent", "")
 
 	res, err := s.c.Do(req)
 	if err != nil {

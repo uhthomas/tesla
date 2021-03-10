@@ -44,6 +44,8 @@ go_library(
         "oauth2.go",
         "option.go",
         "service.go",
+        "transport.go",
+        "useragent.go",
         "vehicle.go",
         "vehicles.go",
     ],
