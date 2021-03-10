@@ -145,8 +145,6 @@ func Main(ctx context.Context) error {
 		return err
 	}
 
-	fmt.Println(code)
-
 	ctx = context.WithValue(ctx, oauth2.HTTPClient, hc)
 
 	t, err := c.Exchange(ctx, code,
