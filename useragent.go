@@ -17,11 +17,9 @@ func userAgent() string {
 		panic(err)
 	}
 
-	x, _ := binary.Uvarint(buf[prefixBytes:])
-
 	var b strings.Builder
 	b.WriteString(base64.RawURLEncoding.EncodeToString(buf[:prefixBytes]))
 	b.WriteRune('/')
-	b.Write(strconv.AppendUint(nil, x, 10))
+	b.Write(strconv.AppendUint(nil, binary.BigEndian.Uint64(buf[prefixBytes:]), 10))
 	return b.String()
 }
