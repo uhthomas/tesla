@@ -24,7 +24,7 @@ func New(ctx context.Context, c *http.Client, opts ...Option) (*Service, context
 	}
 
 	c.Transport = &Transport{RoundTripper: c.Transport}
-	ctx = context.WithValue(ctx, oauth2.HTTPClient, &c)
+	ctx = context.WithValue(ctx, oauth2.HTTPClient, c)
 
 	for _, opt := range opts {
 		if err := opt(ctx, s); err != nil {
