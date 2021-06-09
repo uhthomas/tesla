@@ -226,8 +226,8 @@ type VehicleSoftwareUpdateState struct {
 type VehicleSpeedLimitModeState struct {
 	Active          bool    `json:"active"`
 	CurrentLimitMph float64 `json:"current_limit_mph"`
-	MaxLimitMph     int     `json:"max_limit_mph"`
-	MinLimitMph     int     `json:"min_limit_mph"`
+	MaxLimitMph     float64 `json:"max_limit_mph"`
+	MinLimitMph     float64 `json:"min_limit_mph"`
 	PinCodeSet      bool    `json:"pin_code_set"`
 }
 
